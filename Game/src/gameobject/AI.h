@@ -11,7 +11,7 @@ private:
         float dis = sqrt(disty*disty + distx*distx);
   
         if (disty <0){
-            if (dis <= 350 and ball.velocity.x > 0){
+            if (dis <= 150 and ball.velocity.x > 0){
                 speed = -1*dashSpeed;
                 col = RED;
            
@@ -22,7 +22,7 @@ private:
             }
         }
         else if(disty >0){           
-            if (dis <= 350 and ball.velocity.x > 0 ){
+            if (dis <= 150 and ball.velocity.x > 0 ){
                 speed = dashSpeed;     
                 col = RED;
                 
@@ -64,7 +64,7 @@ public:
     {  
         speed = moveSpeed;
         rec.width = 20;
-        rec.height = 80;
+        rec.height = 40;
         rec.x = WIDTH - rec.width - bar.rec.x;
         rec.y = HEIGHT/2 - rec.height/2;
         position.x = rec.x;

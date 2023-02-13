@@ -26,6 +26,7 @@ private:
             playerScore += 1;
             AppearSequence();
         }
+        
     }
     void updatePlayerPosition(){
         position.y += velocity.y;
@@ -97,17 +98,32 @@ private:
         bool bottom = values[1];
         bool right = values[2];
         bool left = values[3];
+        int variation = GetRandomValue(10,15);
+        int dvar = GetRandomValue(0,1);
         if(top){
-            velocity.y *= -1;
+            velocity.y *= -(1*variation/10);
         }
         if(bottom){
-            velocity.y *= -1;
+            velocity.y *= -(1*variation/10);
         }
         if(right){
-            velocity.x *= -1;
+            if (dvar == 0){
+                velocity.x *= (1*variation/10);
+            }
+            if (dvar == 1){
+                velocity.x *= -(1*variation/10);
+            }
+            
+            velocity.y *= (1*variation/10);
         }
         if(left){
-            velocity.x *= -1;
+            if (dvar == 0){
+                velocity.x *= (1*variation/10);
+            }
+            if (dvar == 1){
+                velocity.x *= -(1*variation/10);
+            }
+            velocity.y *= (1*variation/10);
         }
     }
 public:
@@ -146,11 +162,23 @@ public:
     }
     virtual void render() override 
     {
+        DrawCircle(position.x, position.y, radius*(3 + 2*sin(GetTime()*5)),{255,255,255,22});
         DrawCircle(position.x, position.y, radius,col);
  
-        DrawText(std::to_string(playerScore).c_str(),WIDTH/4 + 10*sin(GetTime()*6) - 30, HEIGHT/8, 130, {255,255,255,22});
-        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4 + 10*sin(GetTime()*6) - 30, HEIGHT/8, 130, {255,255,255,22});
-        DrawText(std::to_string(playerScore).c_str(),WIDTH/4 - 30, HEIGHT/8, 130, {255,255,255,122});
-        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4 - 30, HEIGHT/8, 130, {255,255,255,122});
+        DrawText(
+            std::to_string(playerScore).c_str(),
+            30 + 5*sin(GetTime()*10) ,
+            HEIGHT - 130,
+            130,
+            {255,255,255,22}
+        );
+        DrawText(
+            std::to_string(AIScore).c_str(),
+            WIDTH/2 + 30 + 5*sin(GetTime()*10) ,
+            HEIGHT - 130,
+            130,
+            {255,255,255,22}
+        );
+     
     }
 };
