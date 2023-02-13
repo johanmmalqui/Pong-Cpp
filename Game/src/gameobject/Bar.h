@@ -33,11 +33,11 @@ private:
             col = WHITE;
         }
     }
-    void updatePlayerPosition(){
+    void updatePosition(){
         position.y += velocity.y;
         position.x += velocity.x;
     }
-    void updatePlayerRect(){
+    void updateRect(){
         rec.x = position.x;
         rec.y = position.y;
     }
@@ -65,8 +65,8 @@ public:
         inputHandler();
         handleDash();
         setScreenBounds();
-        updatePlayerPosition();
-        updatePlayerRect();
+        updatePosition();
+        updateRect();
         
     };
     virtual void render() override
