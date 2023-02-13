@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-class BarG: public GameObject
+class Bar: public GameObject
 {
 private:
     void inputHandler(){

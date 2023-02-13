@@ -5,42 +5,30 @@
 class AI: public GameObject
 {
 private:
-    
     void brain(GameObject bar, GameObject ball){
         float difference = ball.position.y - position.y;
-        float distx = position.x - ball.position.x;
-  
-       
         if (difference <0){
-            
             if (difference <= -50){
                 speed = -1*dashSpeed;
-               
             }
             else{
                 rec.height = 75;
                 speed = -1*moveSpeed;
-
             }
         }
-        else if(difference >0){
-            
+        else if(difference >0){           
             if (difference >= 50){
-                speed = dashSpeed;
-              
+                speed = dashSpeed;           
             }
             else{
                 rec.height = 75;
-                speed =  moveSpeed;
-             
+                speed =  moveSpeed;            
             }
         }
         else{
-            
             speed = 0;
         }
         velocity.y = speed;
-    
     }
     void setScreenBounds(){
         if(position.y <= 0){
@@ -60,17 +48,13 @@ private:
         rec.y = position.y;
     }
 public:
-   
-  
-    bool doDash;
     int speed;
     int moveSpeed = 5;
     int dashSpeed = 15;
     int HEIGHT = GetScreenHeight();
     int WIDTH = GetScreenWidth();
-    virtual void p_init(GameObject bar)
+    virtual void init(GameObject bar)
     {  
-        doDash = false;
         speed = moveSpeed;
         rec.width = 20;
         rec.height = 80;
@@ -82,9 +66,8 @@ public:
         velocity.y = 0;
         col = WHITE;
     };
-    virtual void ai_update(GameObject bar, GameObject ball) 
+    virtual void update(GameObject bar, GameObject ball) 
     {
-    
         setScreenBounds();
         brain(bar,ball);
         updatePlayerPosition();

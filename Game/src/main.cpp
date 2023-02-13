@@ -6,8 +6,6 @@
 #include "gameobject/Ball.h"
 #include <iostream>
 
-//TODO
-//CREATE A FUNCTION THAT RETURNS THE SIDE OF A RECTANGLE WHICH IS COLLIDING WITH ANOTHER RECTANGLE
 int BARSIZE = 75;
 int ENEMYBARSIZE = 255;
 int HEIGHT = 1000;
@@ -17,13 +15,12 @@ int WIDTH = 1200;
 int main(void){
     InitWindow(WIDTH,HEIGHT,"Game");
     SetTargetFPS(60);
-    BarG bar;
+    Bar bar;
     AI enemy;
-    BallG ball;
+    Ball ball;
     bar.init();
-    enemy.p_init(bar);
+    enemy.init(bar);
     ball.init();
-
     Shader bloomShader = LoadShader(0, TextFormat("#version 330\n\
         uniform sampler2D source;\n\
         uniform vec2 resolution;\n\
@@ -64,11 +61,10 @@ int main(void){
     float resolution[2] = { (float)WIDTH, (float)HEIGHT };
     SetShaderValue(bloomShader, GetShaderLocation(bloomShader, "resolution"), resolution, SHADER_UNIFORM_VEC2);
 
-
     while(!WindowShouldClose()){
         bar.update();
-        enemy.ai_update(bar, ball);
-        ball.p_update(bar, enemy);
+        enemy.update(bar, ball);
+        ball.update(bar, enemy);
         BeginDrawing();
             ClearBackground(BLACK);
             BeginShaderMode(bloomShader);

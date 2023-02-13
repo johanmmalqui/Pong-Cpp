@@ -1,21 +1,18 @@
 #pragma once 
 #include "GameObject.h"
 #include <random>
-class BallG: public GameObject
+class Ball: public GameObject
 {
 private:
-    void AppearSequence(){
-        
+    void AppearSequence(){   
         position.x = WIDTH/2;
-        position.y = HEIGHT/2;
-       
+        position.y = HEIGHT/2;    
         if ((AIScore + playerScore)%2 == 0){
             velocity.x = -1*GetRandomValue(5,15);
         }
         else if ((AIScore + playerScore)%2 == 1){
             velocity.x = 1*GetRandomValue(5,15);
         }
-        
         velocity.y = GetRandomValue(5,15);
     
         
@@ -54,10 +51,7 @@ private:
             else if (velocity.x >0){
                 velocity.x = -1*GetRandomValue(5,10);
             }
-            
-          
             velocity.y = GetRandomValue(5,10);
-            
         }
     }
 public:
@@ -82,7 +76,7 @@ public:
         velocity.y = speed;
         col = WHITE;
     }
-    virtual void p_update(GameObject bar1, GameObject bar2) 
+    virtual void update(GameObject bar1, GameObject bar2) 
     {
         handleCollision(bar1);
         handleCollision(bar2);
