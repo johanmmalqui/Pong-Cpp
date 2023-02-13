@@ -1,6 +1,6 @@
 #pragma once 
 #include "GameObject.h"
-#include "../collision/collision.h"
+#include "math.h"
 #include <random>
 class Ball: public GameObject
 {
@@ -142,13 +142,15 @@ public:
         handleScreenCollision();
         handleScores();
         std::vector<bool> collisionvalues = handleCollisionAndUpdatePlayer();
-        //std::cout<<collisionvalues[0]<<collisionvalues[1]<<collisionvalues[2]<<collisionvalues[3]<<" "<<velocity.x<<std::endl;
         handleCollision(collisionvalues);
     }
     virtual void render() override 
     {
         DrawCircle(position.x, position.y, radius,col);
-        DrawText(std::to_string(playerScore).c_str(),WIDTH/4, HEIGHT/8, 130, RAYWHITE);
-        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4, HEIGHT/8, 130, RAYWHITE);
+ 
+        DrawText(std::to_string(playerScore).c_str(),WIDTH/4 + 10*sin(GetTime()*6) - 30, HEIGHT/8, 130, {255,255,255,22});
+        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4 + 10*sin(GetTime()*6) - 30, HEIGHT/8, 130, {255,255,255,22});
+        DrawText(std::to_string(playerScore).c_str(),WIDTH/4 - 30, HEIGHT/8, 130, {255,255,255,122});
+        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4 - 30, HEIGHT/8, 130, {255,255,255,122});
     }
 };

@@ -37,6 +37,7 @@
         "functional": "cpp",
         "numeric": "cpp",
         "tuple": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "map": "cpp"
     }
 }
