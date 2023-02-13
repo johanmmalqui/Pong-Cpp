@@ -28,17 +28,13 @@ int main(void){
         BeginDrawing();
             ClearBackground(BLACK);
             DrawRectangle(WIDTH/2 + sin(GetTime())*WIDTH/2, 0, 5, HEIGHT, {255,255,255,21});
-            
             bar.render();
             enemy.render();
             ball.render();
             for(int i = 0; i < 10; i++){
-                
                 DrawRectangle(WIDTH/2 - 10, 180*i+ 30*sin(GetTime()*5), 20, 60 + 30*sin(GetTime()*5), RAYWHITE);
             }
-            
             DrawFPS(20,20);
-            
         EndDrawing();
     }
     
