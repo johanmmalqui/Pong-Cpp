@@ -28,6 +28,15 @@
         "string_view": "cpp",
         "system_error": "cpp",
         "type_traits": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "array": "cpp",
+        "bit": "cpp",
+        "charconv": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "functional": "cpp",
+        "numeric": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
     }
 }

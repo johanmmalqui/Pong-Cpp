@@ -51,7 +51,7 @@ public:
     {
         speed = moveSpeed;
         rec.width = 20;
-        rec.height = 80;
+        rec.height = 75;
         rec.x = 50;
         rec.y = HEIGHT/2 - rec.height/2;
         position.x = rec.x;
@@ -67,6 +67,7 @@ public:
         setScreenBounds();
         updatePlayerPosition();
         updatePlayerRect();
+        
     };
     virtual void render() override
     {

@@ -1,27 +1,34 @@
 #pragma once 
 #include "GameObject.h"
-
+#include <math.h>
 
 class AI: public GameObject
 {
 private:
     void brain(GameObject bar, GameObject ball){
-        float difference = ball.position.y - position.y;
-        if (difference <0){
-            if (difference <= -50){
+        float disty = ball.position.y - position.y - rec.height/2;
+        float distx = ball.position.x - position.x;
+        float dis = sqrt(disty*disty + distx*distx);
+  
+        if (disty <0){
+            if (dis <= 350 and ball.velocity.x > 0){
                 speed = -1*dashSpeed;
+                col = RED;
+           
             }
             else{
-                rec.height = 75;
+                col = WHITE;
                 speed = -1*moveSpeed;
             }
         }
-        else if(difference >0){           
-            if (difference >= 50){
-                speed = dashSpeed;           
+        else if(disty >0){           
+            if (dis <= 350 and ball.velocity.x > 0 ){
+                speed = dashSpeed;     
+                col = RED;
+                
             }
             else{
-                rec.height = 75;
+                col = WHITE;
                 speed =  moveSpeed;            
             }
         }

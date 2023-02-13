@@ -1,5 +1,6 @@
 #pragma once 
 #include "GameObject.h"
+#include "../collision/collision.h"
 #include <random>
 class Ball: public GameObject
 {
@@ -14,9 +15,8 @@ private:
             velocity.x = 1*GetRandomValue(5,15);
         }
         velocity.y = GetRandomValue(5,15);
-    
-        
     }
+
     void handleScores(){
         if(position.x < -20){
             AIScore += 1;
@@ -42,16 +42,72 @@ private:
             velocity.y *= -1;
         }
     }
-    void handleCollision(GameObject gameobject){
-        if (CheckCollisionCircleRec(position, radius, gameobject.rec))
-        {
-            if (velocity.x<0){
-                velocity.x = GetRandomValue(5,10);
+    std::vector<GameObject> getCollidingObjects(){
+        std::vector<GameObject> colliding;
+        for(auto& o: Objects){
+            if(CheckCollisionCircleRec(position, radius, o.rec))
+            {
+                colliding.push_back(o);
             }
-            else if (velocity.x >0){
-                velocity.x = -1*GetRandomValue(5,10);
+        }
+        return colliding;
+    }
+    std::vector<bool> handleCollisionAndUpdatePlayer(){
+        bool top = false;
+        bool bottom = false;
+        bool left = false;
+        bool right = false;
+        position.x += velocity.x;
+        rec.x = position.x - rec.width/2;
+        std::vector<GameObject> colliding = getCollidingObjects();
+        for (auto& o : colliding){
+            if (velocity.x > 0){
+                position.x = o.rec.x - rec.width/2 - 1;
+                right = true;
+              
             }
-            velocity.y = GetRandomValue(5,10);
+            if (velocity.x < 0){
+                position.x = o.rec.x + o.rec.width + rec.width/2 + 1;
+                left = true;
+             
+            }
+        }
+        position.y += velocity.y;
+        rec.y = position.y - rec.height/2;
+        colliding = getCollidingObjects();
+        for (auto& o : colliding){
+            if (velocity.y < 0){
+                position.y = o.rec.y + o.rec.height + rec.height/2 + 1;
+                top = true;
+            }
+            if (velocity.y > 0){
+                position.y = o.rec.y - rec.height/2 - 1;
+                bottom = true;
+            }
+        }
+        std::vector<bool> values;
+        values.push_back(top);
+        values.push_back(bottom);
+        values.push_back(right);
+        values.push_back(left);
+        return values;
+    }
+    void handleCollision(std::vector<bool> values){
+        bool top = values[0];
+        bool bottom = values[1];
+        bool right = values[2];
+        bool left = values[3];
+        if(top){
+            velocity.y *= -1;
+        }
+        if(bottom){
+            velocity.y *= -1;
+        }
+        if(right){
+            velocity.x *= -1;
+        }
+        if(left){
+            velocity.x *= -1;
         }
     }
 public:
@@ -63,8 +119,11 @@ public:
     float speed;
     int HEIGHT = GetScreenHeight();
     int WIDTH = GetScreenWidth();
-    virtual void init() override
-    {
+    std::vector<GameObject> Objects;
+    virtual void init(GameObject bar1, GameObject bar2)
+    {   
+        Objects.push_back(bar1);
+        Objects.push_back(bar2);
         speed = moveSpeed;
         position.x = WIDTH/2;
         position.y = HEIGHT/2;
@@ -72,23 +131,24 @@ public:
         rec.height = radius*2;
         rec.x = position.x - rec.width/2;
         rec.y = position.y - rec.height/2;
-        velocity.x = speed;
-        velocity.y = speed;
+        velocity.x = -8;
+        velocity.y = 1;
         col = WHITE;
     }
     virtual void update(GameObject bar1, GameObject bar2) 
     {
-        handleCollision(bar1);
-        handleCollision(bar2);
+        Objects[0] = bar1;
+        Objects[1] = bar2;
         handleScreenCollision();
         handleScores();
-        updatePlayerPosition();
-        updatePlayerRect();
+        std::vector<bool> collisionvalues = handleCollisionAndUpdatePlayer();
+        //std::cout<<collisionvalues[0]<<collisionvalues[1]<<collisionvalues[2]<<collisionvalues[3]<<" "<<velocity.x<<std::endl;
+        handleCollision(collisionvalues);
     }
     virtual void render() override 
     {
         DrawCircle(position.x, position.y, radius,col);
-        DrawText(std::to_string(playerScore).c_str(),WIDTH/4, HEIGHT/8, 30, RAYWHITE);
-        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4, HEIGHT/8, 30, RAYWHITE);
+        DrawText(std::to_string(playerScore).c_str(),WIDTH/4, HEIGHT/8, 130, RAYWHITE);
+        DrawText(std::to_string(AIScore).c_str(),3*WIDTH/4, HEIGHT/8, 130, RAYWHITE);
     }
 };
