@@ -6,11 +6,8 @@
 #include "gameobject/Ball.h"
 #include <iostream>
 
-int BARSIZE = 75;
-int ENEMYBARSIZE = 255;
 int HEIGHT = 1000;
 int WIDTH = 1200;
-
 
 int main(void){
     InitWindow(WIDTH,HEIGHT,"Game");
