@@ -7,25 +7,73 @@ class Ball: public GameObject
 private:
     void AppearSequence(){   
         position.x = WIDTH/2;
-        position.y = HEIGHT/2;    
-        if ((AIScore + playerScore)%2 == 0){
+        position.y = HEIGHT/2;   
+       
+        if(GetTime() - scoreTime > 1){
+            if ((AIScore + playerScore)%2 == 0){
             velocity.x = -1*GetRandomValue(5,15);
+            }
+            else if ((AIScore + playerScore)%2 == 1){
+                velocity.x = 1*GetRandomValue(5,15);
+            }
+            velocity.y = GetRandomValue(5,15);
         }
-        else if ((AIScore + playerScore)%2 == 1){
-            velocity.x = 1*GetRandomValue(5,15);
-        }
-        velocity.y = GetRandomValue(5,15);
+        
     }
 
     void handleScores(){
+        //std::cout<<scoreTime<<"-"<<GetTime()<<std::endl;
+        //std::cout<<GetTime() - scoreTime<<std::endl; 
         if(position.x < -20){
             AIScore += 1;
-            AppearSequence();
+            scoreTime = GetTime();
+            position.x = WIDTH/2;
+            position.y = HEIGHT/2; 
+            velocity.x = 0;
+            velocity.y = 0;
+            pointScored = true;
         }
         else if(position.x > WIDTH + 20){
             playerScore += 1;
-            AppearSequence();
+            scoreTime = GetTime();
+            position.x = WIDTH/2;
+            position.y = HEIGHT/2; 
+            velocity.x = 0;
+            velocity.y = 0;
+            pointScored =  true;
         }
+        if(pointScored == true){
+            float winradius;
+            winradius = 300 - 196*cos((GetTime() - scoreTime));
+            if(winradius<5){
+                winradius = 5;
+            }
+            std::cout<<std::to_string(255 - sin(PI*0.5*(GetTime()-scoreTime))).c_str()<<std::endl;
+            DrawCircle(position.x, position.y, winradius*(3 + 2*sin(GetTime()*5)),{255,255,255,(unsigned char)(255 - 255*sin(PI*0.5*(GetTime()-scoreTime)))});
+           
+            
+           
+        }
+        if((GetTime() - scoreTime > 1) && (pointScored == true)){
+            DrawText(
+                "ASSIGN SPEED NOW",
+                30,
+                180,
+                20,
+                BLUE
+            );
+            radius = 5;
+            if ((AIScore + playerScore)%2 == 0){
+                velocity.x = -1*GetRandomValue(5,15);
+            }
+            else if ((AIScore + playerScore)%2 == 1){
+                velocity.x = 1*GetRandomValue(5,15);
+            }
+            velocity.y = GetRandomValue(5,7);
+            pointScored = false;
+            
+        }
+        
         
     }
     void updatePlayerPosition(){
@@ -46,7 +94,7 @@ private:
     std::vector<GameObject> getCollidingObjects(){
         std::vector<GameObject> colliding;
         for(auto& o: Objects){
-            if(CheckCollisionCircleRec(position, radius, o.rec))
+            if(CheckCollisionCircleRec(position, radius, o.bbox))
             {
                 colliding.push_back(o);
             }
@@ -63,12 +111,12 @@ private:
         std::vector<GameObject> colliding = getCollidingObjects();
         for (auto& o : colliding){
             if (velocity.x > 0){
-                position.x = o.rec.x - rec.width/2 - 1;
+                position.x = o.bbox.x - rec.width/2 - 1;
                 right = true;
               
             }
             if (velocity.x < 0){
-                position.x = o.rec.x + o.rec.width + rec.width/2 + 1;
+                position.x = o.bbox.x + o.bbox.width + rec.width/2 + 1;
                 left = true;
              
             }
@@ -78,11 +126,11 @@ private:
         colliding = getCollidingObjects();
         for (auto& o : colliding){
             if (velocity.y < 0){
-                position.y = o.rec.y + o.rec.height + rec.height/2 + 1;
+                position.y = o.bbox.y + o.bbox.height + rec.height/2 + 1;
                 top = true;
             }
             if (velocity.y > 0){
-                position.y = o.rec.y - rec.height/2 - 1;
+                position.y = o.bbox.y - rec.height/2 - 1;
                 bottom = true;
             }
         }
@@ -98,43 +146,38 @@ private:
         bool bottom = values[1];
         bool right = values[2];
         bool left = values[3];
-        int variation = GetRandomValue(10,15);
-        int dvar = GetRandomValue(0,1);
+        
         if(top){
-            velocity.y *= -(1*variation/10);
+            velocity.y *= -1;
         }
         if(bottom){
-            velocity.y *= -(1*variation/10);
+            velocity.y *= -1;
         }
         if(right){
-            if (dvar == 0){
-                velocity.x *= (1*variation/10);
-            }
-            if (dvar == 1){
-                velocity.x *= -(1*variation/10);
-            }
-            
-            velocity.y *= (1*variation/10);
+            float temp = velocity.x;
+            velocity.x = abs(velocity.y);
+            velocity.y /= abs(velocity.y);
+            velocity.y *= abs(temp) * 0.95;
+            velocity.x *= -1.35;
         }
-        if(left){
-            if (dvar == 0){
-                velocity.x *= (1*variation/10);
-            }
-            if (dvar == 1){
-                velocity.x *= -(1*variation/10);
-            }
-            velocity.y *= (1*variation/10);
+        if(left){       
+            float temp = velocity.x;
+            velocity.x = abs(velocity.y);
+            velocity.y /= abs(velocity.y);
+            velocity.y *= abs(temp) *0.95;
+            velocity.x *= 1.35;   
         }
     }
 public:
-
     int playerScore = 0;
     int AIScore = 0;
     int radius = 5;
     float moveSpeed = 7;
     float speed;
-    int HEIGHT = GetScreenHeight();
-    int WIDTH = GetScreenWidth();
+    float HEIGHT = GetScreenHeight();
+    float WIDTH = GetScreenWidth();
+    double scoreTime = GetTime();
+    bool pointScored = false;
     std::vector<GameObject> Objects;
     virtual void init(GameObject bar1, GameObject bar2)
     {   
@@ -147,8 +190,8 @@ public:
         rec.height = radius*2;
         rec.x = position.x - rec.width/2;
         rec.y = position.y - rec.height/2;
-        velocity.x = -8;
-        velocity.y = 1;
+        velocity.x = -5;
+        velocity.y = -5;
         col = WHITE;
     }
     virtual void update(GameObject bar1, GameObject bar2) 
@@ -174,11 +217,13 @@ public:
         );
         DrawText(
             std::to_string(AIScore).c_str(),
-            WIDTH/2 + 30 + 5*sin(GetTime()*10) ,
-            HEIGHT - 130,
+            WIDTH -170 + 5*sin(GetTime()*10) ,
+            20,
             130,
             {255,255,255,22}
         );
+
+        
      
     }
 };

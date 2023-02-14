@@ -9,6 +9,7 @@ public:
     Vector2 velocity;
     Color col; 
     Rectangle rec;
+    Rectangle bbox;
     virtual void init(){}
     virtual void update(){}
     virtual void render(){}

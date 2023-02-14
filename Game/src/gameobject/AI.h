@@ -56,15 +56,16 @@ private:
     }
 public:
     int speed;
-    int moveSpeed = 5;
-    int dashSpeed = 15;
+    int moveSpeed = 3;
+    int dashSpeed = 30;
     int HEIGHT = GetScreenHeight();
     int WIDTH = GetScreenWidth();
     virtual void init(GameObject bar)
     {  
+        bbox = {rec.x , rec.y, rec.width + 250, rec.height};
         speed = moveSpeed;
         rec.width = 20;
-        rec.height = 40;
+        rec.height = 75;
         rec.x = WIDTH - rec.width - bar.rec.x;
         rec.y = HEIGHT/2 - rec.height/2;
         position.x = rec.x;
@@ -79,9 +80,11 @@ public:
         brain(bar,ball);
         updatePosition();
         updateRect();
+        bbox = {rec.x , rec.y, rec.width + 200, rec.height};
     };
     virtual void render() override
     {
         DrawRectangle(position.x, position.y, rec.width, rec.height, col);
+     
     };
 };
